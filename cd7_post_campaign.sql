@@ -3,16 +3,16 @@ CREATE OR REPLACE VIEW `prod-organize-arizon-4e1c0a83.viewers_dataset.cd7_2025_d
   WITH canvassed AS(
     SELECT 
     COUNT(s.DWID) AS canvassed
-    , s.`Date Canvassed` AS date_canvassed
+    , s.DateCanvassed
     , CASE 
-        WHEN s.`Date Canvassed` <= '2025-07-15' THEN 'pre-primary'
-        WHEN s.`Date Canvassed` > '2025-07-15' THEN 'post-primary'
+        WHEN s.DateCanvassed <= '2025-07-15' THEN 'pre-primary'
+        WHEN s.DateCanvassed > '2025-07-15' THEN 'post-primary'
         ELSE null
       END AS campaign_phase
     , cw.pctnum
 
 
-    FROM `prod-organize-arizon-4e1c0a83.work_2025.cd7_special` AS s
+    FROM `prod-organize-arizon-4e1c0a83.work_2025.cd7_canvass_results` AS s
 
     -- join nation file limit to AZ to remove multi state dupes
     LEFT JOIN `proj-tmc-mem-mvp.catalist_cleaned.cln_catalist__district` AS d
@@ -24,7 +24,7 @@ CREATE OR REPLACE VIEW `prod-organize-arizon-4e1c0a83.viewers_dataset.cd7_2025_d
 
     -- national file has records for all state registrations, need to limit to AZ only
     WHERE d.state = 'AZ'
-      AND s.Result = 'Canvassed'
+      AND s.ResultShortName = 'Canvassed'
 
     GROUP BY 2,3,4
     ORDER BY 2,3,4
@@ -33,16 +33,16 @@ CREATE OR REPLACE VIEW `prod-organize-arizon-4e1c0a83.viewers_dataset.cd7_2025_d
   , attempted AS(
     SELECT 
     COUNT(s.DWID) AS attempted
-    , s.`Date Canvassed` AS date_canvassed
+    , s.DateCanvassed
     , CASE 
-        WHEN s.`Date Canvassed` <= '2025-07-15' THEN 'pre-primary'
-        WHEN s.`Date Canvassed` > '2025-07-15' THEN 'post-primary'
+        WHEN s.DateCanvassed <= '2025-07-15' THEN 'pre-primary'
+        WHEN s.DateCanvassed > '2025-07-15' THEN 'post-primary'
         ELSE null
       END AS campaign_phase
     , cw.pctnum
 
 
-    FROM `prod-organize-arizon-4e1c0a83.work_2025.cd7_special` AS s
+    FROM `prod-organize-arizon-4e1c0a83.work_2025.cd7_canvass_results` AS s
 
     -- join nation file limit to AZ to remove multi state dupes
     LEFT JOIN `proj-tmc-mem-mvp.catalist_cleaned.cln_catalist__district` AS d
@@ -53,7 +53,7 @@ CREATE OR REPLACE VIEW `prod-organize-arizon-4e1c0a83.viewers_dataset.cd7_2025_d
       ON d.uniqueprecinctcode = cw.uniqueprecinctcode
 
     -- national file has records for all state registrations, need to limit to AZ only
-    WHERE d.state = 'AZ'
+    --WHERE d.state = 'AZ'
 
     GROUP BY 2,3,4
     ORDER BY 2,3,4
@@ -68,10 +68,10 @@ CREATE OR REPLACE VIEW `prod-organize-arizon-4e1c0a83.viewers_dataset.cd7_2025_d
     , g.GEOMETRY
   FROM canvassed AS c
   LEFT JOIN attempted AS a
-    ON c.pctnum = a.pctnum AND c.date_canvassed = a.date_canvassed
-
+    ON c.pctnum = a.pctnum AND c.DateCanvassed = a.DateCanvassed
+    
   LEFT JOIN `prod-organize-arizon-4e1c0a83.geofiles.az_precincts_geo` AS g
     ON c.pctnum = g.PCTNUM
 
-  WHERE g.CONGRESSIO = 7
+  --WHERE g.CONGRESSIO = 7
 )
