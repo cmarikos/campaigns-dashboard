@@ -206,8 +206,8 @@ prod-organize-arizon-4e1c0a83.work_2025.cd7_special
 - `DWID`
 - `Date Canvassed`
 - `Result`
-/
-One flag that should be fixed in future iterations is the the `combined_CD7_2025.csv` and underlying VAN reports by default have spaces in column headers, it still works, but I should have subbed those for underscores in the csv_union script.
+
+> One flag that should be fixed in future iterations is the the `combined_CD7_2025.csv` and underlying VAN reports by default have spaces in column headers, it still works, but I should have subbed those for underscores in the csv_union script.
 ---
 
 ## Output Columns (View)
