@@ -1,5 +1,5 @@
 CREATE OR REPLACE VIEW `prod-organize-arizon-4e1c0a83.viewers_dataset.deep_canvass_notes` AS (
-SELECT
+SELECT DISTINCT
 --cw.pctnum
  CAST(c.DateCanvassed AS DATE) AS DateCanvassed
 , c.VanID
@@ -25,9 +25,12 @@ INNER JOIN `prod-organize-arizon-4e1c0a83.rich_christina_proj.targetsmart_pctnum
 LEFT JOIN `prod-organize-arizon-4e1c0a83.raze_ngpvan_data.TSM_OneAZ_ContactsNotes_VF` AS n
   ON c.VanID = n.VanID
 
+LEFT JOIN `prod-organize-arizon-4e1c0a83.viewers_dataset.ResultsID` AS r
+  ON c.ResultID = r.ResultID
+
 WHERE CAST(c.DateCanvassed AS DATE) > '2025-01-01'
   AND c.CanvassedBy IS NOT NULL
   AND ContactTypeName = 'Walk'
-  --AND n.NoteText IS NOT NULL
+  AND r.ResultShortName = 'Canvassed'
   AND (cw.pctnum LIKE 'YU%' OR cw.pctnum LIKE 'PM%')
 )
