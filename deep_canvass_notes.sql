@@ -1,8 +1,11 @@
 CREATE OR REPLACE VIEW `prod-organize-arizon-4e1c0a83.viewers_dataset.deep_canvass_notes` AS (
 SELECT
-cw.pctnum
-, CAST(c.DateCanvassed AS DATE) AS DateCanvassed
+--cw.pctnum
+ CAST(c.DateCanvassed AS DATE) AS DateCanvassed
 , c.VanID
+, vb.vb_tsmart_first_name
+, vb.vb_tsmart_last_name
+, vb.vb_tsmart_city
 , n.NoteText
 , c.CanvassedBy
 
