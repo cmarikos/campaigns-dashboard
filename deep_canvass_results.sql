@@ -1,6 +1,6 @@
 -- updated 8/21/2025
 
-CREATE OR REPLACE VIEW `prod-organize-arizon-4e1c0a83.viewers_dataset.campaigns_deep_canvass` AS(
+CREATE OR REPLACE VIEW `prod-organize-arizon-4e1c0a83.viewers_dataset.campaigns_deep_canvass_results` AS(
 WITH doors AS(
 SELECT 
 cw.pctnum
