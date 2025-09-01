@@ -15,4 +15,4 @@ df_combined = pd.concat([pd.read_csv(file) for file in csv_files], ignore_index=
 print(df_combined.head())
 
 # Export to a new CSV file
-df_combined.to_csv('combined_CD7_2025.csv', index=False)
+df_combined.to_csv('combined_{{target_district_label}}_2025.csv', index=False)
