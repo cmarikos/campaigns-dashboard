@@ -1,11 +1,11 @@
-CREATE OR REPLACE VIEW `{{project_id}}.{{analytics_dataset}}.cd7_results_propensity` AS(
+CREATE OR REPLACE VIEW `prod-organize-arizon-4e1c0a83.viewers_dataset.cd7_results_propensity` AS(
 SELECT
 m.catalistmodel_voteprop2025
 , COUNT(cr.DWID) AS voters
 
-FROM `{{project_id}}.{{work_dataset}}.cd7_canvass_results` AS cr
+FROM `prod-organize-arizon-4e1c0a83.work_2025.cd7_canvass_results` AS cr
 
-LEFT JOIN `{{external_project_id}}.{{external_dataset}}.cln_catalist__models` AS m
+LEFT JOIN `proj-tmc-mem-mvp.catalist_cleaned.cln_catalist__models` AS m
      ON cr.DWID = m.dwid
 
 WHERE m.catalistmodel_voteprop2025 IS NOT NULL

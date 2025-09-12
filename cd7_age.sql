@@ -1,4 +1,4 @@
-CREATE OR REPLACE VIEW `{{project_id}}.{{analytics_dataset}}.cd7_results_age` AS(
+CREATE OR REPLACE VIEW `prod-organize-arizon-4e1c0a83.viewers_dataset.cd7_results_age` AS(
 SELECT
 CASE 
    WHEN cr.ResultShortName <> 'Canvassed' THEN 'Not Canvassed'
@@ -15,9 +15,9 @@ END AS canvass_result
     ELSE NULL
   END AS Age_Buckets
 , COUNT(cr.DWID) AS voters
-FROM `{{project_id}}.{{work_dataset}}.cd7_canvass_results` AS cr
+FROM `prod-organize-arizon-4e1c0a83.work_2025.cd7_canvass_results` AS cr
 
-LEFT JOIN `{{external_project_id}}.catalist_enhanced.enh_catalist__ntl_current` AS a
+LEFT JOIN `proj-tmc-mem-mvp.catalist_enhanced.enh_catalist__ntl_current` AS a
      ON cr.DWID = a.dwid
 
 GROUP BY 1,2
