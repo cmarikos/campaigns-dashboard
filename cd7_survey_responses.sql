@@ -9,7 +9,7 @@ sr.SurveyQuestionLongName
     ELSE  sr.SurveyResponseName
   END AS SurveyResponseName
 , COUNT(sr.DWID)
-FROM `{{project_id}}.{{work_dataset}}.cd7_survey_responses` AS sr
+FROM `prod-organize-arizon-4e1c0a83.work_2025.cd7_survey_responses` AS sr
 
 GROUP BY 1,2
 ORDER BY 1,2

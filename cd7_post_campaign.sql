@@ -1,29 +1,28 @@
-CREATE OR REPLACE VIEW `{{project_id}}.{{analytics_dataset}}.cd7_2025_dashboard_geo` AS(
+CREATE OR REPLACE VIEW `prod-organize-arizon-4e1c0a83.viewers_dataset.cd7_2025_dashboard_geo` AS(
 
   WITH canvassed AS(
     SELECT 
     COUNT(s.DWID) AS canvassed
     , s.DateCanvassed
     , CASE 
-        WHEN s.DateCanvassed <= '{{primary_date}}' THEN 'pre-primary'
-        WHEN s.DateCanvassed > '{{primary_date}}' THEN 'post-primary'
+        WHEN s.DateCanvassed <= '2025-07-15' THEN 'pre-primary'
+        WHEN s.DateCanvassed > '2025-07-15' THEN 'post-primary'
         ELSE null
       END AS campaign_phase
     , cw.pctnum
 
-    FROM `{{project_id}}.{{work_dataset}}.cd7_canvass_results` AS s
+    FROM `prod-organize-arizon-4e1c0a83.work_2025.cd7_canvass_results` AS s
 
     -- join nation file limit to AZ to remove multi state dupes
-    LEFT JOIN `{{external_project_id}}.{{external_dataset}}.{{district_table}}` AS d
+    LEFT JOIN `proj-tmc-mem-mvp.catalist_cleaned.cln_catalist__district` AS d
       ON s.DWID = d.dwid 
-    
 
     -- join in crosswalk for pctnum
-    LEFT JOIN `{{project_id}}.{{crosswalk_dataset}}.{{precinct_crosswalk_table}}` AS cw
+    LEFT JOIN `prod-organize-arizon-4e1c0a83.rich_christina_proj.catalist_pctnum_crosswalk_native` AS cw
       ON d.uniqueprecinctcode = cw.uniqueprecinctcode
 
     -- national file has records for all state registrations, need to limit to AZ only
-    WHERE d.state = '{{state_code}}'
+    WHERE d.state = 'AZ'
       AND s.ResultShortName = 'Canvassed'
 
     GROUP BY 2,3,4
@@ -35,25 +34,25 @@ CREATE OR REPLACE VIEW `{{project_id}}.{{analytics_dataset}}.cd7_2025_dashboard_
     COUNT(s.DWID) AS attempted
     , s.DateCanvassed
     , CASE 
-        WHEN s.DateCanvassed <= '{{primary_date}}' THEN 'pre-primary'
-        WHEN s.DateCanvassed > '{{primary_date}}' THEN 'post-primary'
+        WHEN s.DateCanvassed <= '2025-07-15' THEN 'pre-primary'
+        WHEN s.DateCanvassed > '2025-07-15' THEN 'post-primary'
         ELSE null
       END AS campaign_phase
     , cw.pctnum
 
 
-    FROM `{{project_id}}.{{work_dataset}}.cd7_canvass_results` AS s
+    FROM `prod-organize-arizon-4e1c0a83.work_2025.cd7_canvass_results` AS s
 
     -- join nation file limit to AZ to remove multi state dupes
-    LEFT JOIN `{{external_project_id}}.{{external_dataset}}.{{district_table}}` AS d
+    LEFT JOIN `proj-tmc-mem-mvp.catalist_cleaned.cln_catalist__district` AS d
       ON s.DWID = d.dwid 
 
     -- join in crosswalk for pctnum
-    LEFT JOIN `{{project_id}}.{{crosswalk_dataset}}.{{precinct_crosswalk_table}}` AS cw
+    LEFT JOIN `prod-organize-arizon-4e1c0a83.rich_christina_proj.catalist_pctnum_crosswalk_native` AS cw
       ON d.uniqueprecinctcode = cw.uniqueprecinctcode
 
     -- national file has records for all state registrations, need to limit to AZ only
-    --WHERE d.state = '{{state_code}}'
+    WHERE d.state = 'AZ'
 
     GROUP BY 2,3,4
     ORDER BY 2,3,4
@@ -64,27 +63,28 @@ CREATE OR REPLACE VIEW `{{project_id}}.{{analytics_dataset}}.cd7_2025_dashboard_
     COUNT(DISTINCT p.regaddrline1||s.DateCanvassed) AS doors_canvassed
     , s.DateCanvassed
     , CASE 
-        WHEN s.DateCanvassed <= '{{primary_date}}' THEN 'pre-primary'
-        WHEN s.DateCanvassed > '{{primary_date}}' THEN 'post-primary'
+        WHEN s.DateCanvassed <= '2025-07-15' THEN 'pre-primary'
+        WHEN s.DateCanvassed > '2025-07-15' THEN 'post-primary'
         ELSE null
       END AS campaign_phase
     , cw.pctnum
 
-    FROM `{{project_id}}.{{work_dataset}}.cd7_canvass_results` AS s
+    FROM `prod-organize-arizon-4e1c0a83.work_2025.cd7_canvass_results` AS s
 
-    -- join nation file limit to AZ to remove multi state dupes
-    LEFT JOIN `{{external_project_id}}.{{external_dataset}}.{{district_table}}` AS d
+     -- join nation file limit to AZ to remove multi state dupes
+    LEFT JOIN `proj-tmc-mem-mvp.catalist_cleaned.cln_catalist__district` AS d
       ON s.DWID = d.dwid 
-    
-    LEFT JOIN `{{external_project_id}}.{{external_dataset}}.cln_catalist__person` AS p
-      ON s.DWID = p.dwid
-    
+
     -- join in crosswalk for pctnum
-    LEFT JOIN `{{project_id}}.{{crosswalk_dataset}}.{{precinct_crosswalk_table}}` AS cw
+    LEFT JOIN `prod-organize-arizon-4e1c0a83.rich_christina_proj.catalist_pctnum_crosswalk_native` AS cw
       ON d.uniqueprecinctcode = cw.uniqueprecinctcode
+    
+    -- join in person table for reg address for door count
+    LEFT JOIN `proj-tmc-mem-mvp.catalist_cleaned.cln_catalist__person` AS p
+      ON s.DWID = p.dwid
 
     -- national file has records for all state registrations, need to limit to AZ only
-    WHERE d.state = '{{state_code}}'
+    WHERE d.state = 'AZ'
       AND s.ResultShortName = 'Canvassed'
 
     GROUP BY 2,3,4
@@ -92,32 +92,33 @@ CREATE OR REPLACE VIEW `{{project_id}}.{{analytics_dataset}}.cd7_2025_dashboard_
   )
   
   , doors_attempted AS(
-    SELECT 
+   SELECT 
     COUNT(DISTINCT p.regaddrline1||s.DateCanvassed) AS doors_attempted
     , s.DateCanvassed
     , CASE 
-        WHEN s.DateCanvassed <= '{{primary_date}}' THEN 'pre-primary'
-        WHEN s.DateCanvassed > '{{primary_date}}' THEN 'post-primary'
+        WHEN s.DateCanvassed <= '2025-07-15' THEN 'pre-primary'
+        WHEN s.DateCanvassed > '2025-07-15' THEN 'post-primary'
         ELSE null
       END AS campaign_phase
     , cw.pctnum
 
-    FROM `{{project_id}}.{{work_dataset}}.cd7_canvass_results` AS s
+    FROM `prod-organize-arizon-4e1c0a83.work_2025.cd7_canvass_results` AS s
 
-    -- join nation file limit to AZ to remove multi state dupes
-    LEFT JOIN `{{external_project_id}}.{{external_dataset}}.{{district_table}}` AS d
+     -- join nation file limit to AZ to remove multi state dupes
+    LEFT JOIN `proj-tmc-mem-mvp.catalist_cleaned.cln_catalist__district` AS d
       ON s.DWID = d.dwid 
-    
-    LEFT JOIN `{{external_project_id}}.{{external_dataset}}.cln_catalist__person` AS p
-      ON s.DWID = p.dwid
-    
+
     -- join in crosswalk for pctnum
-    LEFT JOIN `{{project_id}}.{{crosswalk_dataset}}.{{precinct_crosswalk_table}}` AS cw
+    LEFT JOIN `prod-organize-arizon-4e1c0a83.rich_christina_proj.catalist_pctnum_crosswalk_native` AS cw
       ON d.uniqueprecinctcode = cw.uniqueprecinctcode
+    
+    -- join in person table for reg address for door count
+    LEFT JOIN `proj-tmc-mem-mvp.catalist_cleaned.cln_catalist__person` AS p
+      ON s.DWID = p.dwid
 
     -- national file has records for all state registrations, need to limit to AZ only
-    WHERE d.state = '{{state_code}}'
-
+    WHERE d.state = 'AZ'
+     
     GROUP BY 2,3,4
     ORDER BY 2,3,4
   )
@@ -142,8 +143,7 @@ CREATE OR REPLACE VIEW `{{project_id}}.{{analytics_dataset}}.cd7_2025_dashboard_
     ON c.pctnum = da.pctnum AND c.DateCanvassed = da.DateCanvassed
   
     
-  LEFT JOIN `{{project_id}}.{{geo_dataset}}.{{precinct_geo_table}}` AS g
+  LEFT JOIN `prod-organize-arizon-4e1c0a83.geofiles.az_precincts_geo` AS g
     ON c.pctnum = g.PCTNUM
 
-  --WHERE g.CONGRESSIO = {{target_district_number}}
 )
